@@ -51,6 +51,60 @@ export class PingCommand extends AbstractCommandNoResponse {
 	}
 }
 
+export class EnableNotifyTransport extends AbstractCommandNoResponse {
+	readonly ShouldEnable: boolean
+
+	constructor(shouldEnable: boolean) {
+		super()
+		this.ShouldEnable = shouldEnable
+	}
+
+	serialize(): NamedMessage {
+		const res: NamedMessage = {
+			name: 'notify',
+			params: { transport: `${this.ShouldEnable}` },
+		}
+
+		return res
+	}
+}
+
+export class EnableNotifySlot extends AbstractCommandNoResponse {
+	readonly ShouldEnable: boolean
+
+	constructor(shouldEnable: boolean) {
+		super()
+		this.ShouldEnable = shouldEnable
+	}
+
+	serialize(): NamedMessage {
+		const res: NamedMessage = {
+			name: 'notify',
+			params: { slot: `${this.ShouldEnable}` },
+		}
+
+		return res
+	}
+}
+
+export class EnableNotifyConfiguration extends AbstractCommandNoResponse {
+	readonly ShouldEnable: boolean
+
+	constructor(shouldEnable: boolean) {
+		super()
+		this.ShouldEnable = shouldEnable
+	}
+
+	serialize(): NamedMessage {
+		const res: NamedMessage = {
+			name: 'notify',
+			params: { configuration: `${this.ShouldEnable}` },
+		}
+
+		return res
+	}
+}
+
 export class QuitCommand extends AbstractCommandNoResponse {
 	serialize(): NamedMessage {
 		const res: NamedMessage = {

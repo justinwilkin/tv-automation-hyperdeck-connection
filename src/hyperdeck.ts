@@ -5,7 +5,15 @@ import { ResponseCodeType, GetResponseCodeType, AsynchronousCode } from './codes
 import { AbstractCommand } from './commands'
 import * as AsyncHandlers from './asyncHandlers'
 import { ResponseMessage } from './message'
-import { DummyConnectCommand, WatchdogPeriodCommand, PingCommand, QuitCommand } from './commands/internal'
+import {
+	DummyConnectCommand,
+	WatchdogPeriodCommand,
+	PingCommand,
+	QuitCommand,
+	EnableNotifyTransport,
+	EnableNotifySlot,
+	EnableNotifyConfiguration,
+} from './commands/internal'
 import { buildMessageStr, MultilineParser } from './parser'
 
 export interface HyperdeckOptions {
@@ -49,6 +57,7 @@ export class Hyperdeck extends EventEmitter {
 	private _lastCommandTime = 0
 	private _asyncHandlers: { [key: number]: AsyncHandlers.IHandler } = {}
 	private _parser: MultilineParser
+	private _isNotifyEnabled = false
 
 	private _connectionActive = false // True when connected/connecting/reconnecting
 	private _host = ''
@@ -178,7 +187,10 @@ export class Hyperdeck extends EventEmitter {
 						.then(() => {
 							this._logDebug('ping: setting up')
 							this._pingInterval = setInterval(() => {
-								if (this.connected) this._performPing().catch((e) => this.emit('error', e))
+								if (this.connected) {
+									this._performPing().catch((e) => this.emit('error', e))
+									this._enableHyperdeckNotifications().catch((e) => this.emit('error', e))
+								}
 							}, this._pingPeriod)
 						})
 						.then(() => c)
@@ -198,8 +210,23 @@ export class Hyperdeck extends EventEmitter {
 
 				this._triggerRetryConnection()
 			})
-
 		this.socket.connect(this._port, this._host)
+	}
+
+	private async _enableHyperdeckNotifications() {
+		// Enable being notified if we haven't already
+		// Note: This is required for protocol 1.8
+		if (!this._isNotifyEnabled) {
+			this._isNotifyEnabled = true
+			this._logDebug('notify:transport:{true/false}')
+			this._enableNotifyTransport().catch((e) => this.emit('error', e))
+
+			this._logDebug('notify:slot:{true/false}')
+			this._enableNotifySlot().catch((e) => this.emit('error', e))
+
+			this._logDebug('notify:display timecode:{true/false}')
+			this._enableNotifyConfiguration().catch((e) => this.emit('error', e))
+		}
 	}
 
 	private async _performPing() {
@@ -216,6 +243,21 @@ export class Hyperdeck extends EventEmitter {
 			this._logDebug('ping: queueing')
 			await this.sendCommand(new PingCommand())
 		}
+	}
+
+	private async _enableNotifyTransport() {
+		this._logDebug('enableNotify: queueing')
+		await this.sendCommand(new EnableNotifyTransport(true)).catch((e) => this.emit('error', e))
+	}
+
+	private async _enableNotifySlot() {
+		this._logDebug('enableSlot: queueing')
+		await this.sendCommand(new EnableNotifySlot(true)).catch((e) => this.emit('error', e))
+	}
+
+	private async _enableNotifyConfiguration() {
+		this._logDebug('enableTimecode: queueing')
+		await this.sendCommand(new EnableNotifyConfiguration(true)).catch((e) => this.emit('error', e))
 	}
 
 	private _sendQueuedCommand() {

@@ -31,6 +31,7 @@
     "info": "npm-scripts-info",
     "build": "trash dist && yarn build:main",
     "build:main": "tsc -p tsconfig.build.json",
+    "start": "yarn build && node dist/vipyrdeck.js",
     "lint": "eslint . --ext .ts --ext .js --ext .tsx --ext .jsx --ignore-pattern dist",
     "lint-fix": "yarn lint --fix",
     "unit": "jest",

@@ -4,14 +4,14 @@ const hyperdeck = new Hyperdeck()
 
 hyperdeck.DEBUG = false
 
-hyperdeck.connect('192.168.0.230')
+hyperdeck.connect('192.168.0.125')
 
 hyperdeck.on('connected', (info) => {
     console.log(info)
     
-    hyperdeck.sendCommand(new Commands.TransportInfoCommand()).then((transportInfo) => {
-      console.log(transportInfo)  
-    })
+    hyperdeck.sendCommand(new Commands.ClipsCommand()).then((clipInfo) => {
+      console.log(clipInfo)  
+    });
 })
 
 // Notifications

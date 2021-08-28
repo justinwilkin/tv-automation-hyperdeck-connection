@@ -13,18 +13,21 @@ export enum ErrorCode {
 	OutOfRange = 109,
 	NoInput = 110,
 	RemoteControlDisabled = 111,
+	ClipNotFound = 112,
 	ConnectionRejected = 120,
 	InvalidState = 150,
 	InvalidCodec = 151,
 	InvalidFormat = 160,
 	InvalidToken = 161,
 	FormatNotPrepared = 162,
+	ParamSingleLineCommandNotSupported = 163,
 }
 
 export enum SynchronousCode {
 	OK = 200,
 	SlotInfo = 202,
 	DeviceInfo = 204,
+	ClipInfo = 205,
 	DiskList = 206,
 	TransportInfo = 208,
 	Notify = 209,

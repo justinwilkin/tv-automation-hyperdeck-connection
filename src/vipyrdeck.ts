@@ -4,7 +4,7 @@ const hyperdeck = new Hyperdeck()
 
 hyperdeck.DEBUG = false
 
-hyperdeck.connect('192.168.0.125')
+hyperdeck.connect('10.0.1.247')
 
 hyperdeck.on('connected', (info) => {
     console.log(info)

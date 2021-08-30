@@ -26,14 +26,25 @@ export class ClipsCommand extends AbstractCommand {
 	}
 
 	deserialize(msg: ResponseMessage): ClipsCommandResponse {
+		console.log(msg);
 		const clipIds = Object.keys(msg.params).filter((x) => x !== 'clip count')
 		const clips = clipIds.map((x) => {
-            const details = msg.params[x].split(' ');
+            const details = msg.params[x].split(' ')
+			var name = ''
+
+			for (var s = 0; s < details.length - 2; s++) {
+				name += ` ${details[s]}`
+			} 
+
+			console.log(name)
+
             const clipDetail: ClipDetail = {
-                name: details[0],
-                startTime: details[1],
-                duration: details[2]
+                name: name,
+                startTime: details[details.length-2],
+                duration: details[details.length-1]
             }
+
+			console.log(clipDetail)
 
 			const clip: ClipInfo = {
 				clipId: x,

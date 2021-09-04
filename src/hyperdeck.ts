@@ -241,7 +241,7 @@ export class Hyperdeck extends EventEmitter {
 			this._logDebug('ping: queue has commands')
 		} else {
 			this._logDebug('ping: queueing')
-			await this.sendCommand(new PingCommand())
+			await this.sendCommand(new PingCommand()).catch((e) => this.emit('error', e))
 		}
 	}
 
